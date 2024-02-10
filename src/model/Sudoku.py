@@ -1,4 +1,4 @@
-import requests, json
+import requests
 
 class Sudoku:
 	def __init__(self) -> None:
@@ -23,5 +23,20 @@ class Sudoku:
 		return string
 	
 	def is_valid(self, row, col, val) -> bool:
-		print(row, col, val)
-		return True
+		return not (
+			self.in_row(row, val) or
+			self.in_col(col, val) or
+			self.in_cell(row, col, val)
+		)
+	
+	def in_row(self, row, val) -> bool:
+		return val in self.board[row]
+
+	def in_col(self, col, val) -> bool:
+		for row in range(len(self.board)):
+			if self.board[row][col] == val:
+				return True
+		return False
+
+	def in_cell(self, row, col, val) -> bool:
+		pass
