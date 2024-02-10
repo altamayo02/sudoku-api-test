@@ -21,3 +21,7 @@ class Sudoku:
 			if (row + 1) % 3 == 0:
 				string += "- " + "- - - - " * 3 + "\n"
 		return string
+	
+	def is_valid(self, row, col, val) -> bool:
+		print(row, col, val)
+		return True
