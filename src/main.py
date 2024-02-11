@@ -23,7 +23,7 @@ def validar_jugada():
 		col = jugada["columna"] - 1
 		num = jugada["numero"]
 		if sudoku.is_valid(fila, col, num):
-			resuelto = sudoku.draft(fila, col, num)
+			resuelto = sudoku.fill(fila, col, num)
 			print(f"\n{sudoku}")
 			if resuelto:
 				return jsonify({

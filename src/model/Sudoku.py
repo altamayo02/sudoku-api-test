@@ -54,12 +54,12 @@ class Sudoku:
 				if val == self.board[i][j]: return True
 		return False
 	
-	def draft(self, row, col, val) -> None:
-		self.draft[row][col] = val
+	def fill(self, row, col, val) -> None:
+		self.fill[row][col] = val
 
 		# Verificar si faltan números para resolver el sudoku
 		for i in range(self.board):
 			for j in range(self.board[i]):
-				if self.board[i][j] == 0 and self.draft[i][j] == " ":
+				if self.board[i][j] == 0 and self.fill[i][j] == " ":
 					return False
 		return True
