@@ -55,11 +55,11 @@ class Sudoku:
 		return False
 	
 	def fill(self, row, col, val) -> None:
-		self.fill[row][col] = val
+		self.draft[row][col] = val
 
 		# Verificar si faltan números para resolver el sudoku
 		for i in range(self.board):
 			for j in range(self.board[i]):
-				if self.board[i][j] == 0 and self.fill[i][j] == " ":
+				if self.board[i][j] == 0 and self.draft[i][j] == " ":
 					return False
 		return True
