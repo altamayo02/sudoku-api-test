@@ -27,7 +27,7 @@ def validar_jugada():
 			print(f"\n{sudoku}")
 			if resuelto:
 				return jsonify({
-					"message": "¡Ha resuelto el sudoku!",
+					"message": "¡Ha rellenado el sudoku!",
 					"board": sudoku.board,
 					"draft": sudoku.draft
 				}), 200

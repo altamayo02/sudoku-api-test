@@ -58,8 +58,8 @@ class Sudoku:
 		self.draft[row][col] = val
 
 		# Verificar si faltan números para resolver el sudoku
-		for i in range(self.board):
-			for j in range(self.board[i]):
+		for i in range(len(self.board)):
+			for j in range(len(self.board[i])):
 				if self.board[i][j] == 0 and self.draft[i][j] == " ":
 					return False
 		return True
