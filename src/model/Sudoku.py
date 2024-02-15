@@ -10,6 +10,7 @@ class Sudoku:
 		else:
 			raise Exception("Couldn't fetch sudoku from https://sudoku-api.vercel.app/api/dosuku")
 	
+	# Retorna una representación del sudoku en ASCII
 	def __str__(self) -> str:
 		string = "- " + "- - - - " * 3 + "\n"
 		for row in range(len(self.board)):
@@ -60,6 +61,9 @@ class Sudoku:
 		# Verificar si faltan números para resolver el sudoku
 		for i in range(len(self.board)):
 			for j in range(len(self.board[i])):
-				if self.board[i][j] == 0 and self.draft[i][j] == " ":
+				if (
+					self.board[i][j] != self.solution[i][j] and
+					self.draft[i][j] != self.solution[i][j]
+				):
 					return False
 		return True
