@@ -5,7 +5,7 @@ app = Flask(__name__)
 sudoku = Sudoku()
 
 @app.route("/sudokugame/cell", methods=["POST"])
-def validar_jugada():
+def validar_cuadrante():
 	jugada: dict = request.get_json()
 	
 	# Si cada atributo de jugada está entre 1 y 9
@@ -41,7 +41,7 @@ def validar_jugada():
 		}), 400
 
 @app.route("/sudokugame/lines", methods=["POST"])
-def validar_jugada():
+def validar_lineas():
 	jugada: dict = request.get_json()
 	
 	# Si cada atributo de jugada está entre 1 y 9
