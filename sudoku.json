@@ -1,0 +1,201 @@
+[
+  {
+    "fila": 0,
+    "columnas": [
+      [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    ]
+  },
+  {
+    "fila": 1,
+    "columnas": [
+      [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    ]
+  },
+  {
+    "fila": 2,
+    "columnas": [
+      [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    ]
+  }
+]
+
+    """aquí todo queda guardado en 9 filas"""
+
+    matrix=[]
+    for temp in filas:
+
+        #almacenamos las filas que hay dentro de las tres filas principales
+        matrixTemp=[[],[],[]]
+
+        #b es un iterador entre 0,1,2
+        b=0
+        for a in temp:
+
+            if b==0:
+                matrixTemp[0].append(a)
+                b+=1
+
+            elif b==1:
+                matrixTemp[1].append(a)
+                b+=1
+
+            else:
+                matrixTemp[2].append(a)
+                b=0
+
+        for subfila in matrixTemp:
+            matrix.append(subfila)
+
+    print(matrix)
+
+    return "sd"
