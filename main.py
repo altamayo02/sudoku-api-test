@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 
-def revisarsudoku(data):
+def desestructurar(data):
 
     filas=[]
     subcolumnas=[]
@@ -23,38 +23,45 @@ def revisarsudoku(data):
         filas.append(subcolumnas)
         subcolumnas=[]
 
+    """aquí todo el sudoku queda guardado en 9 filas"""
+
+    matrix = []
+    for temp in filas:
+
+        # almacenamos las filas que hay dentro de las tres filas principales
+        matrixTemp = [[], [], []]
+
+        # b es un iterador entre 0,1,2
+        b = 0
+        for a in temp:
+
+            if b == 0:
+                matrixTemp[0].append(a)
+                b += 1
+
+            elif b == 1:
+                matrixTemp[1].append(a)
+                b += 1
+
+            else:
+                matrixTemp[2].append(a)
+                b = 0
+
+        for subfila in matrixTemp:
+            matrix.append(subfila)
+
+    return "matrix"
 
 
+    def estructurar(matrix):
+        for i in matrix:
+            if
 
 @app.route('/sudoku', methods=['POST'])
-def recibir():
-    sudoku= request.get_json()
-    return revisarsudoku(sudoku)
+def recibir():x
+    sudoku = request.get_json()
+    return desestructurar(sudoku)
 
 
-"""
-def crear():
-    temp=request.get_json()x
-    usuarios.append(temp)
-    respuesta={
-        "Hola": f"van {len(usuarios)} usuarios"
-    }
-    return jsonify(respuesta)
-
-
-@app.route('/users', methods=['GET'])
-def mostrar():
-    return jsonify(usuarios),200
-
-
-@app.route('/users/<int:cc>', methods=['GET'])
-def buscar(cc):
-    print("dsf")
-    for a in usuarios:
-        if a["cc"] == cc:
-            return jsonify(a)
-    return jsonify({"Mensaje": "No se encontró el usuario"})
-
-"""
 if __name__=='__main__':
     app.run(debug=True)
