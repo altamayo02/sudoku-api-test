@@ -4,63 +4,93 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 
-def desestructurar(data):
+class Sudoku:
+    def __init__(self):
+        self.board = None
 
-    filas=[]
-    subcolumnas=[]
+    def desestructurar(self, data):
 
-    """aquí todo queda guardado en 3 filas, cada una con tres filas de la matriz sin ordenarse"""
+        filas = []
+        subcolumnas = []
 
-    #recorro las filas
-    for i in range(0,3):
-        #recorro las subcolumnas
-        for j in range(0,3):
-            #recorro las columnas
-            for k in range(0,3):
-                #recorro las subfilas
-                for a in range(0,3):
-                    subcolumnas.append(data[i]["columnas"][j][k][a])
-        filas.append(subcolumnas)
-        subcolumnas=[]
+        """aquí todo queda guardado en 3 filas, cada una con tres filas de la matriz sin ordenarse"""
 
-    """aquí todo el sudoku queda guardado en 9 filas"""
+        # recorro las filas
+        for i in range(0, 3):
+            # recorro las subcolumnas
+            for j in range(0, 3):
+                # recorro las columnas
+                for k in range(0, 3):
+                    # recorro las subfilas
+                    for a in range(0, 3):
+                        subcolumnas.append(data[i]["columnas"][j][k][a])
+            filas.append(subcolumnas)
+            subcolumnas = []
 
-    matrix = []
-    for temp in filas:
+        """aquí todo el sudoku queda guardado en 9 filas"""
 
-        # almacenamos las filas que hay dentro de las tres filas principales
-        matrixTemp = [[], [], []]
+        matrix = []
+        for temp in filas:
 
-        # b es un iterador entre 0,1,2
-        b = 0
-        for a in temp:
+            # almacenamos las filas que hay dentro de las tres filas principales
+            matrixTemp = [[], [], []]
 
-            if b == 0:
-                matrixTemp[0].append(a)
-                b += 1
+            # b es un iterador entre 0,1,2
+            b = 0
+            for a in temp:
 
-            elif b == 1:
-                matrixTemp[1].append(a)
-                b += 1
+                if b == 0:
+                    matrixTemp[0].append(a)
+                    b += 1
 
-            else:
-                matrixTemp[2].append(a)
-                b = 0
+                elif b == 1:
+                    matrixTemp[1].append(a)
+                    b += 1
 
-        for subfila in matrixTemp:
-            matrix.append(subfila)
+                else:
+                    matrixTemp[2].append(a)
+                    b = 0
 
-    return "matrix"
+            for subfila in matrixTemp:
+                matrix.append(subfila)
 
+        self.board = matrix
 
-    def estructurar(matrix):
-        for i in matrix:
-            if
+    def in_cell(self, argumentos):
+
+        valores = list(argumentos.values())
+
+        """encontramos las filas y columnas de su celda"""
+        for a in range(0, 2):
+            if (valores[2] + a) % 3 == 0:
+                if a != 0:
+                    filaInicio = (valores[2] + a) - 3
+                else:
+                    filaInicio = valores[2]
+
+        for a in range(0, 2):
+            if (valores[3] + a) % 3 == 0:
+                if a != 0:
+                    columnaInicio = (valores[3] + a) - 3
+                else:
+                    columnaInicio = valores[3]
+
+        """revisamos si no está ya el numero, de estarlo enviamos un True"""
+        for a in range(filaInicio, filaInicio + 3):
+            for i in range(columnaInicio, columnaInicio + 3):
+                if valores[1] == self.board[a][i]:
+                    return True
+        return False
+
 
 @app.route('/sudoku', methods=['POST'])
-def recibir():x
-    sudoku = request.get_json()
-    return desestructurar(sudoku)
+def recibir():
+
+    sudoku = Sudoku()
+    respuesta = request.get_json()
+
+    sudoku.desestructurar(respuesta["sudoku"])
+    return sudoku.in_cell(respuesta)
 
 
 if __name__=='__main__':
