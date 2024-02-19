@@ -1,15 +1,30 @@
 import requests
 
 class Sudoku:
-	def __init__(self) -> None:
-		response = requests.get("https://sudoku-api.vercel.app/api/dosuku")
-		if response.status_code // 100 == 2:
-			self.board = response.json()["newboard"]["grids"][0]["value"]
-			self.draft = [[" " for _ in range(9)] for _ in range(9)]
-			self.solution = response.json()["newboard"]["grids"][0]["solution"]
+	def __init__(self, board = None) -> None:
+		self.board = [[" " for _ in range(9)] for _ in range(9)]
+		self.draft = self.board.copy()
+		if board:
+			# Iterate quadrant rows
+			for quad_row in range(0, 3):
+				# Iterate quadrant columns
+				for quad_col in range(0, 3):
+					# Iterate rows
+					for row in range(0, 3):
+						# Iterate values
+						for col in range(0, 3):
+							self.board[3 * quad_row + row][3 * quad_col + col] = (
+								board[quad_row]["columnas"][quad_col][row][col]
+							)
+			self.solution = None
 		else:
-			raise Exception("Couldn't fetch sudoku from https://sudoku-api.vercel.app/api/dosuku")
-	
+			response = requests.get("https://sudoku-api.vercel.app/api/dosuku")
+			if response.status_code // 100 == 2:
+				self.board = response.json()["newboard"]["grids"][0]["value"]
+				self.solution = response.json()["newboard"]["grids"][0]["solution"]
+			else:
+				raise Exception("Couldn't fetch sudoku from https://sudoku-api.vercel.app/api/dosuku")
+			
 	# Retorna una representación del sudoku en ASCII
 	def __str__(self) -> str:
 		string = "- " + "- - - - " * 3 + "\n"
@@ -57,6 +72,8 @@ class Sudoku:
 	
 	def fill(self, row, col, val) -> None:
 		self.draft[row][col] = val
+		if not self.solution:
+			return False
 
 		# Verificar si faltan números para resolver el sudoku
 		for i in range(len(self.board)):
@@ -69,21 +86,21 @@ class Sudoku:
 		return True
 
 	def desestructurar(self, data):
-
 		filas = []
 		subcolumnas = []
 
+
 		"""aquí todo queda guardado en 3 filas, cada una con tres filas de la matriz sin ordenarse"""
 
-		# recorro las filas
-		for i in range(0, 3):
-			# recorro las subcolumnas
-			for j in range(0, 3):
+		# recorro las filas de cuadrantes
+		for cuad_fila in range(0, 3):
+			# recorro las columnas de cuadrantes
+			for cuad_col in range(0, 3):
 				# recorro las columnas
-				for k in range(0, 3):
+				for fila in range(0, 3):
 					# recorro las subfilas
-					for a in range(0, 3):
-						subcolumnas.append(data[i]["columnas"][j][k][a])
+					for valor in range(0, 3):
+						subcolumnas.append(data[cuad_fila]["columnas"][cuad_col][fila][valor])
 			filas.append(subcolumnas)
 			subcolumnas = []
 
@@ -97,18 +114,18 @@ class Sudoku:
 
 			# b es un iterador entre 0,1,2
 			b = 0
-			for a in temp:
+			for valor in temp:
 
 				if b == 0:
-					matrixTemp[0].append(a)
+					matrixTemp[0].append(valor)
 					b += 1
 
 				elif b == 1:
-					matrixTemp[1].append(a)
+					matrixTemp[1].append(valor)
 					b += 1
 
 				else:
-					matrixTemp[2].append(a)
+					matrixTemp[2].append(valor)
 					b = 0
 
 			for subfila in matrixTemp:

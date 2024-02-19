@@ -2,11 +2,11 @@ from flask import Flask, request, jsonify
 from model.Sudoku import Sudoku
 
 app = Flask(__name__)
-sudoku = Sudoku()
 
 @app.route("/sudokugame/cell", methods=["POST"])
 def validar_cuadrante():
 	jugada: dict = request.get_json()
+	sudoku = Sudoku(jugada["tablero"])
 	
 	# Si cada atributo de jugada está entre 1 y 9
 	if all([attr in range(1, 10) for attr in jugada.values()]):
@@ -43,13 +43,15 @@ def validar_cuadrante():
 @app.route("/sudokugame/lines", methods=["POST"])
 def validar_lineas():
 	jugada: dict = request.get_json()
+	sudoku = Sudoku(jugada["tablero"])
+	del jugada["tablero"]
 	
 	# Si cada atributo de jugada está entre 1 y 9
 	if all([attr in range(1, 10) for attr in jugada.values()]):
 		fila = jugada["fila"] - 1
 		col = jugada["columna"] - 1
 		num = jugada["numero"]
-		if sudoku.in_col(fila, col, num) and sudoku.in_row(fila, col, num):
+		if not sudoku.in_col(col, num) and not sudoku.in_row(fila, num):
 			resuelto = sudoku.fill(fila, col, num)
 			print(f"\n{sudoku}")
 			if resuelto:
