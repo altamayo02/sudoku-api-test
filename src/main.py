@@ -29,7 +29,7 @@ def validar_cuadrante():
 					"to": email,
 					"subject": "¡Felicidades!",
 					"content": "¡Usted ha resuelto el sudoku!",
-				}, sudoku.draft)
+				}, sudoku)
 				return jsonify({
 					"message": "Sudoku resuelto.",
 					"board": sudoku.board,
@@ -40,7 +40,7 @@ def validar_cuadrante():
 					"to": email,
 					"subject": "¡Enhorabuena!",
 					"content": "¡Su jugada ha sido válida! Véalo por usted mismo:",
-				}, sudoku.draft)
+				}, sudoku)
 				return jsonify({
 					"message": "Jugada válida.",
 					"board": sudoku.board,
@@ -51,7 +51,7 @@ def validar_cuadrante():
 				"to": email,
 				"subject": "Oh no...",
 				"content": "Su jugada no fue válida. Asegúrese también de no haber escrito sobre los números ya dados.",
-			}, sudoku.draft)
+			}, sudoku)
 			return jsonify({
 				"message": "Jugada inválida."
 			}), 400
@@ -60,7 +60,7 @@ def validar_cuadrante():
 			"to": email,
 			"subject": "Oh no...",
 			"content": "Su jugada no fue válida. La fila, la columna y el número deben estar entre 1 y 9.",
-		}, sudoku.draft)
+		}, sudoku)
 		return jsonify({
 			"message": "Jugada inválida."
 		}), 400
@@ -68,7 +68,7 @@ def validar_cuadrante():
 @app.route("/sudokugame/lines", methods=["POST"])
 def validar_lineas():
 	jugada: dict = request.get_json()
-	sudoku = Sudoku(jugada["tablero"])
+	sudoku = Sudoku()
 	del jugada["tablero"]
 	email = jugada["correo"]
 	del jugada["correo"]
@@ -86,7 +86,7 @@ def validar_lineas():
 					"to": email,
 					"subject": "¡Felicidades!",
 					"content": "¡Usted ha resuelto el sudoku!",
-				}, sudoku.draft)
+				}, sudoku)
 				return jsonify({
 					"message": "Sudoku resuelto.",
 					"board": sudoku.board,
@@ -97,7 +97,7 @@ def validar_lineas():
 					"to": email,
 					"subject": "¡Enhorabuena!",
 					"content": "¡Su jugada ha sido válida! Véalo por usted mismo:",
-				}, sudoku.draft)
+				}, sudoku)
 				return jsonify({
 					"message": "Jugada válida.",
 					"board": sudoku.board,
@@ -108,7 +108,7 @@ def validar_lineas():
 				"to": email,
 				"subject": "Oh no...",
 				"content": "Su jugada no fue válida. Asegúrese también de no haber escrito sobre los números ya dados.",
-			}, sudoku.draft)
+			}, sudoku)
 			return jsonify({
 				"message": 	"Jugada inválida."
 			}), 400
@@ -117,22 +117,34 @@ def validar_lineas():
 			"to": email,
 			"subject": "Oh no...",
 			"content": "Su jugada no fue válida. La fila, la columna y el número deben estar entre 1 y 9.",
-		}, sudoku.draft)
+		}, sudoku)
 		return jsonify({
 			"message": "Jugada inválida."
 		}), 400
 	
-def notify(mail_data: dict, board: list[list]):
+def notify(mail_data: dict, sudoku: Sudoku):
 	try:
 		connection_string = os.environ.get("CONN_STRING")
 		client = EmailClient.from_connection_string(connection_string)
 
-		draft_style = 'background: teal; color: white;'
-		sudokuHtml = mail_data["content"] + '\n\n' + '<table border="1">'
-		for row in board:
+		sudokuHtml = mail_data["content"] + '\n\n\n' + '<table border="1">'
+		for row in range(0, 9):
 			sudokuHtml += '<tr>'
-			for data in row:
-				sudokuHtml += f'<td style="width: 1.5em; text-align: center; {draft_style if data != 0 else ""}"><b>{data}</b></td>'
+			for col in range(0, 9):
+				style = ''
+				data = ''
+				if sudoku.draft[row][col] not in [0, " "]:
+					style = "color: teal;"
+					data = sudoku.draft[row][col]
+				elif sudoku.board[row][col] != 0:
+					style = "background: teal; color: white;"
+					data = sudoku.board[row][col]
+				else:
+					style = "background: lightgrey; color: lightgrey;"
+					data = "?"
+				sudokuHtml += (
+					f'<td style="width: 1.5em; text-align: center; {style}"><b>{data}</b></td>'
+				)
 			sudokuHtml += '</tr>'
 		sudokuHtml += '</table>'
 
@@ -152,11 +164,11 @@ def notify(mail_data: dict, board: list[list]):
 
 		poller = client.begin_send(message)
 		result = poller.result()
+		print(result)
 	except Exception as ex:
 		print(ex)
 	return jsonify({
 		'message': 'E-mail sent successfully',
-		'result': result
 	}), 200
 
 if __name__ == "__main__":
